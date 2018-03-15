@@ -1,7 +1,9 @@
 package com.example.a2hanj43.android5uis;
 
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,6 +34,35 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        NavigationView nView = (NavigationView)findViewById(R.id.navigationView);
+        final DrawerLayout dLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+
+
+        nView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+
+
+            public boolean onNavigationItemSelected(MenuItem item) {
+                String what = "";
+                switch(item.getItemId()) {
+                    case R.id.save:
+                        what = "SAVE";
+                        break;
+
+                    case R.id.load:
+                        what = "LOAD";
+                        break;
+
+                    case R.id.about:
+                        what = "ABOUT US";
+                        break;
+
+                }
+                new AlertDialog.Builder(MainActivity.this).setPositiveButton("OK", null).
+                        setMessage(what).show();
+                dLayout.closeDrawers();// Close the navigation drawer
+                return true;
+            }
+        });
     }
 
     class SearchHandler implements SearchView.OnQueryTextListener {
@@ -102,5 +133,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
     }
+
+
 }
 //on page 9

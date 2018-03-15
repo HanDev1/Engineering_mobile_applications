@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:title="@string/save" android:id="@+id/save" android:icon="@drawable/ic_save_white_24dp"
-        app:showAsAction="ifRoom"/> <!-- ifRoom means that if theres no room on the toolbar it will move it to the burger menu -->
 
     <item android:title="@string/create" android:id="@+id/create" android:icon="@drawable/ic_create_white_24dp"
         app:showAsAction="ifRoom"/>
@@ -12,4 +10,6 @@
 
     <item android:title="@string/settings" android:id="@+id/settings" android:icon="@drawable/ic_settings_white_24dp"
         app:showAsAction="ifRoom"/>
+
+
 </menu>
