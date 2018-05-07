@@ -29,14 +29,38 @@
                 android:text="@string/app_name"
                 android:id="@+id/toolbar1"/>
 
+            <!--
             <FrameLayout android:layout_width="match_parent" 	android:layout_height="match_parent"
-                android:id="@+id/frameLayout" android:text="@string/helloworld"
-                android:layout_below="@id/toolbar1"/>
+            android:id="@+id/frameLayout" android:text="@string/helloworld"
+            android:layout_below="@id/toolbar1"/> -->
 
 
-            <TextView android:layout_width="match_parent" 	android:layout_height="wrap_content"
-                android:id="@+id/tv1" android:text="@string/helloworld"
+
+
+            <EditText
+                android:id="@+id/pun"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:inputType="text"
                 android:layout_below="@id/toolbar1"/>
+
+            <EditText
+                android:id="@+id/genre"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:inputType="text"
+                android:layout_below="@id/pun"/>
+
+            <!--
+            <ListView
+                android:id="@+id/listView1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/genre">
+            </ListView>-->
+
 
 
             <android.support.design.widget.FloatingActionButton
@@ -50,6 +74,8 @@
                 app:elevation="6dp"
                 app:pressedTranslationZ="12dp"
                 android:src="@drawable/ic_create_white_24dp"/>
+
+
 
         </RelativeLayout>
 

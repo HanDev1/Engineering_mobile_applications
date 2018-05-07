@@ -37,7 +37,7 @@ public class MyHelper extends SQLiteOpenHelper {
 
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL ("create TABLE " + TABLE_NAME + "(Id INTEGER PRIMARY KEY AUTOINCREMENT, Pun VARCHAR(255), Genre VARCHAR(255))");
+        db.execSQL ("create TABLE " + TABLE_NAME + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, Pun VARCHAR(255), Genre VARCHAR(255))");
         //db.execSQL ("CREATE TABLE IF NOT EXISTS Puns (Id INTEGER PRIMARY KEY, Pun VARCHAR(255), Genre VARCHAR(255))");
     }
 
@@ -104,11 +104,19 @@ public class MyHelper extends SQLiteOpenHelper {
         return res;
     }
 
-//    public Cursor getSearchData(){
-//        SQLiteDatabase db = getWritableDatabase();
-//        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME + "WHERE" + COL_3 + "=" userinput , null);
-//        return res;
-//    }
+    public Cursor deleteData(){
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor res = db.rawQuery("DELETE FROM " + TABLE_NAME, null);
+        return res;
+    }
+
+    public Cursor getSearchData(String s){
+        SQLiteDatabase db = getReadableDatabase();
+        //String selectQuery = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL_3 + " =\" " + s + "\";";
+        String selectQuery = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL_3 + " LIKE '%" + s + "%' ";
+        Cursor res = db.rawQuery(selectQuery, null);
+        return res;
+    }
 
 
 
