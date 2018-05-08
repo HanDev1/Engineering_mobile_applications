@@ -1,9 +1,5 @@
 package com.example.a2hanj43.android5uis;
 
-/**
- * Created by Justi on 06/05/2018.
- */
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -27,8 +23,7 @@ public class MyHelper extends SQLiteOpenHelper {
     static final String COL_1 = "ID";
     static final String COL_2 = "Pun";
     static final String COL_3 = "Genre";
-
-
+    SQLiteDatabase SQLITEDATABASE;
 
     public MyHelper(Context ctx) {
         super(ctx, DATABASE_NAME, null, 1); //3rd parnathese was VERSION
@@ -45,44 +40,9 @@ public class MyHelper extends SQLiteOpenHelper {
         db.execSQL ("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
-/*
-    public ArrayList<Song> findSong()
-    {
-        String title = "song1";
-        ArrayList<Song> music = new ArrayList<Song>();
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery ("SELECT * FROM Music WHERE Title=?",
-                new String[] { title } );
-        if (cursor.moveToFirst())
-        {
-            while(!cursor.isAfterLast())
-            {
-                Song s = new Song
-                        (cursor.getString(cursor.getColumnIndex("Title")),
-                                cursor.getString(cursor.getColumnIndex("Artist")),
-                                cursor.getLong(cursor.getColumnIndex("Year")));
-                music.add(s);
-                cursor.moveToNext();
-            }
-        }
-        cursor.close();
-        return music;
-    }
-*/
-
 
     public Boolean insertData(String Pun, String Genre)
-    //public long insertRecord(String Pun, String Genre)
     {
-//        SQLiteDatabase db = getWritableDatabase();
-//        SQLiteStatement stmt = db.compileStatement
-//                ("INSERT INTO Puns (Pun, Genre) VALUES (?, ?)");
-//        stmt.bindString (1, Pun);
-//        stmt.bindString (2, Genre);
-//        long id = stmt.executeInsert();
-//        Log.d("sqlite","allocated id: " + id);
-//        return id;
-
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_2, Pun);
@@ -96,8 +56,6 @@ public class MyHelper extends SQLiteOpenHelper {
         }
     }
 
-    // cursor = * This interface provides random read-write access to the result set returned
-    // * by a database query.
     public Cursor getAllData(){
         SQLiteDatabase db = getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
@@ -117,7 +75,5 @@ public class MyHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery(selectQuery, null);
         return res;
     }
-
-
 
 }

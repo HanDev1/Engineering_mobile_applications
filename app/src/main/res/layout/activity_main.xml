@@ -51,6 +51,31 @@
                 android:inputType="text"
                 android:layout_below="@id/pun"/>
 
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:id="@+id/tv2"
+            android:layout_below="@id/genre"/>
+            <TextView
+                android:id="@+id/xacc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv2"/>
+
+<!--
+            <ImageView
+                android:id="@+id/iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/North"
+                android:layout_below="@id/tv2"/> -->
+
+
+            <TextView
+                android:id="@+id/yacc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/xacc"/>
+
+
             <!--
             <ListView
                 android:id="@+id/listView1"

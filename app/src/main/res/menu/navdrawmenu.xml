@@ -7,6 +7,9 @@
     <item android:title="Load!" android:id="@+id/load"
         app:showAsAction="ifRoom"/> <!--android:icon="@drawable/ic_file_download_white_24dp"-->
 
+    <item android:title="My Puns!" android:id="@+id/myPuns"
+        app:showAsAction="ifRoom"/>
+
     <item android:title="About!" android:id="@+id/about"
         app:showAsAction="ifRoom"/> <!-- after about android:icon="@drawable/ic_info_white_24dp" -->
 

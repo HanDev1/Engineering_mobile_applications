@@ -7,4 +7,5 @@
     <string name="helloworld">Hello world!</string>
     <string name="Pun">Pun</string>
     <string name="Genre">Genre</string>
+    <string name="MyPuns">My Puns</string>
 </resources>

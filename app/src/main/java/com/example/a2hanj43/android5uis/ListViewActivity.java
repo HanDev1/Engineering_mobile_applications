@@ -18,6 +18,7 @@ public class ListViewActivity extends Activity {
     Cursor cursor;
     SQLiteListAdapter ListAdapter ;
 
+
     ArrayList<String> ID_ArrayList = new ArrayList<String>();
     ArrayList<String> Pun_ArrayList = new ArrayList<String>();
     ArrayList<String> Genre_ArrayList = new ArrayList<String>();

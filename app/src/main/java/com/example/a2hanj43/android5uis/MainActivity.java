@@ -4,9 +4,14 @@ import android.Manifest;
 import android.app.Fragment;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.MenuItemCompat;
@@ -22,21 +27,32 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import static com.example.a2hanj43.android5uis.MyHelper.TABLE_NAME;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     EditText Pun, Genre;
     TextView textview;
     MyHelper controller;
     Cursor cursor;
+
+    Sensor accel, magField;
+
+    float[] accelValues, magFieldValues, orientationMatrix, orientations;
+    private boolean isShowing = false;
+    //private static ImageView iv;
+    //private int current_image_index;
+    //int[] images = {R.drawable.North};
+
     //combining list activity
     /*
     SQLiteDatabase SQLITEDATABASE;
@@ -68,6 +84,29 @@ public class MainActivity extends AppCompatActivity {
 
         addData();
         showAllPuns();
+
+        TextView tv = (TextView) findViewById(R.id.tv2);
+        tv.setText("Nothing to see here...");
+
+        //for sensors//////////////////////////////////////
+        //obtain sensor manager using a given context (activity)
+        SensorManager sMgr = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
+        //obtain a sensor (accelerometer)
+        accel = sMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        magField = sMgr.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+        //sMgr.registerListener(sensorEventListener,accel, SensorManager.SENSOR_DELAY_UI);
+
+
+        sMgr.registerListener(this, accel, SensorManager.SENSOR_DELAY_UI);
+        sMgr.registerListener(this, magField,SensorManager.SENSOR_DELAY_UI);
+
+        accelValues = new float[3];
+        magFieldValues = new float[3];
+        orientationMatrix = new float[16];// combination of rotation and translation need 4 by 4 matrix
+        orientations = new float[3];
+
 
         //adding listview
         //LISTVIEW = (ListView) findViewById(R.id.listView1);
@@ -110,6 +149,10 @@ public class MainActivity extends AppCompatActivity {
 
                         break;
 
+                    case R.id.myPuns:
+                        startActivity(new Intent(MainActivity.this, ListViewActivity.class));
+                        break;
+
                     case R.id.about:
                         //what = "ABOUT US";
                         String about = "Candidate Q12248843's EMA AE2 assessment - Featuring a pun finder";
@@ -140,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void ShowSQLiteDBdata() {
 
-        SQLITEDATABASE = controller.getWritableDatabase();
+        SQLITEDATABASE = controller.getWritableDgatabase();
 
         cursor = SQLITEDATABASE.rawQuery("SELECT * FROM " + TABLE_NAME , null);
 
@@ -191,24 +234,6 @@ public class MainActivity extends AppCompatActivity {
             //refresh edittext boxes to blank after fab is clicked.
             Pun.setText(null);
             Genre.setText(null);
-
-            //
-            //-AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-            //-alertDialog.setMessage("Enter your pun!");
-//                final EditText input = new EditText(MainActivity.this);
-
-//                +if(input.getVisibility() == View.VISIBLE)
-//                +{
-//                +    input.setVisibility(View.INVISIBLE);
-//                +}
-//                +else {
-//                +    input.setVisibility(View.VISIBLE);
-//                +}
-////                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-//                        LinearLayout.LayoutParams.MATCH_PARENT,
-//                        LinearLayout.LayoutParams.MATCH_PARENT);
-//                input.setLayoutParams(lp);
-//                alertDialog.setView(input);
 
         }
 
@@ -364,7 +389,112 @@ public class MainActivity extends AppCompatActivity {
         // handle list item selection
     }
 
+    //when the device's sensors changes such as the orientation of the phone
+    //@Override
+    public void onSensorChanged(SensorEvent ev) {
 
+        DecimalFormat df = new DecimalFormat("#.##");
+        TextView xacc = (TextView) findViewById(R.id.xacc);
+        TextView yacc = (TextView) findViewById(R.id.yacc);
+
+        if (ev.sensor == accel) {
+            for (int i = 0; i < 3; i++) {
+                accelValues[i] = ev.values[i];//ev.values.clone();//.clone() makes a copy of array but is memory inefficient
+            }
+
+        } else if (ev.sensor == magField) {
+            for (int i = 0; i < 3; i++) {
+                magFieldValues[i] = ev.values[i];//ev.values.clone();//.clone() makes a copy of array but is memory inefficient
+            }
+
+        }
+        SensorManager.getRotationMatrix(orientationMatrix, null, accelValues, magFieldValues);
+        SensorManager.getOrientation(orientationMatrix, orientations);
+
+        xacc.setText("Current Bearing : " + (orientations[0] * 180 / Math.PI));
+        yacc.setText("DIRECTIONS: NESW" );
+
+        double North = 1, East = 90, South = 180, West = 270;
+        double phonebearing = orientations[0]*180/Math.PI;
+        //translating negative bearing values to be positive thus a 0-360degrees instead of -180 - 180degrees
+        if (phonebearing < 0) {
+
+            phonebearing = 360 + phonebearing;
+        }
+        //if the bearing of the device is +- 10 degrees to the bearing North
+        if (Math.abs(phonebearing - North) <= 10) {
+            if (!isShowing) {
+                TextView tv = (TextView) findViewById(R.id.tv2);
+
+                //iv = (ImageView)findViewById(R.id.iv);
+                //iv.setImageResource(images[current_image_index]);
+
+                tv.setText("");
+                tv.append("Direction: North "+"\n");
+                tv.append("Special Joke: "  + "What do you get from a cow in the North pole?" + "\n");
+                tv.append("Answer: " + "Cold cream" + "\n\n");
+
+
+                System.out.println("FIND ME PLS");
+                isShowing = true;
+            }
+        }else if(Math.abs(phonebearing - East) <= 10) {
+                if (!isShowing) {
+                    TextView tv = (TextView) findViewById(R.id.tv2);
+
+                    //iv = (ImageView)findViewById(R.id.iv);
+                    //iv.setImageResource(images[current_image_index]);
+
+                    tv.setText("");
+                    tv.append("Direction: East " +"\n");
+                    tv.append("Special Joke: "  + "There is no joke with East." + "\n\n");
+
+                    System.out.println("testing east");
+                    isShowing = true;
+                }
+            }else if (Math.abs(phonebearing - South) <= 10) {
+            if (!isShowing) {
+                TextView tv = (TextView) findViewById(R.id.tv2);
+
+                //iv = (ImageView)findViewById(R.id.iv);
+                //iv.setImageResource(images[current_image_index]);
+
+                tv.setText("");
+                tv.append("Direction: South "+"\n");
+                tv.append("Special Joke: "  + "What do you call Santa living in the South Pole?" + "\n");
+                tv.append("Answer: " + "A lost Clause" + "\n\n");
+
+
+                System.out.println("Testing South");
+                isShowing = true;
+            }
+        }else if (Math.abs(phonebearing - West) <= 10) {
+            if (!isShowing) {
+                TextView tv = (TextView) findViewById(R.id.tv2);
+
+                //iv = (ImageView)findViewById(R.id.iv);
+                //iv.setImageResource(images[current_image_index]);
+
+                tv.setText("");
+                tv.append("Direction: West "+ "\n");
+                tv.append("Special Joke: "  + "A three-legged dog walks into a saloon in the Old West. He sidles up to the bar and announces: \"I'm looking for the man who shot my paw.\"" + "\n\n");
+
+
+                System.out.println("FIND ME PLS");
+                isShowing = true;
+            }
+        }
+        else {
+            TextView tv = (TextView) findViewById(R.id.tv2);
+            tv.setText("");
+            isShowing = false;
+        }
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
 
 }
-//on page 9
